@@ -22,9 +22,9 @@ class DormFactory extends Factory
             'images' => fake()->imageUrl(),
             'longtitude' => fake()->longitude(),
             'latitude' => fake()->latitude(),
-            'capacity' => fake()->numberBetween(0, 999),
+            'capacity' => fake()->numberBetween(0, 50),
             'phone' => fake()->phoneNumber(),
-            'type' => fake()->randomElement(['Male', 'Female', 'Mixed']),
+            'type' => fake()->randomElement(['Putra', 'Putri', 'Campur']),
             'description' => fake()->text(),
         ];
     }

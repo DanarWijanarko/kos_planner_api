@@ -23,6 +23,15 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('123456'),
             'role' => 'admin',
         ]);
+        // owner
+        User::factory()->create([
+            'name' => 'Owner',
+            'phone' => '082322424242',
+            'email' => 'owner@gmail.com',
+            'gender' => 'female',
+            'password' => Hash::make('123456'),
+            'role' => 'owner',
+        ]);
         // Client
         User::factory()->create([
             'name' => 'Client',
@@ -35,6 +44,6 @@ class DatabaseSeeder extends Seeder
 
         User::factory(3)->create();
 
-        Dorm::factory(50)->create();
+        // Dorm::factory(50)->create();
     }
 }

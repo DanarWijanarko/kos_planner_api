@@ -1,11 +1,14 @@
 <?php
 
+use App\Http\Controllers\OwnerController;
 use App\Models\Dorm;
+use App\Models\Room;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
+use Illuminate\Support\Facades\Validator;
 
 Route::prefix('v1')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
@@ -29,8 +32,33 @@ Route::prefix('v1')->group(function () {
 
         // ! Owner
         Route::prefix('owner')->middleware(['restrictRole:owner'])->group(function () {
-            Route::get('/dorms', function () {
-                return Dorm::all();
+            // ! Dorms
+            Route::prefix('dorms')->group(function () {
+                // ? Get List of Dorms Based on User Owner
+                Route::get('/{user_id}', [OwnerController::class, 'getDorms']);
+
+                Route::get('/detail/{dorm_id}', [OwnerController::class, 'getDormDetail']);
+
+                // ? Create Dorm Based on User Owner
+                Route::post('/{user_id}', [OwnerController::class, 'storeDorm']);
+
+                // ? Update Dorm Based on User Owner and dorm ID
+                // ! Ubah Method menjadi PUT!!!
+                Route::put('/{user_id}/edit/{dorm_id}', [OwnerController::class, 'editDorm']);
+
+                Route::delete('/{dorm_id}', [OwnerController::class, 'deleteDorm']);
+            });
+
+            Route::prefix('rooms')->group(function () {
+                // ? Get List of Dorms Based on Dorm
+                Route::get('/{dorm_id}', [OwnerController::class, 'getRoom']);
+
+                // ? Create Dorm Based on Dorm
+                Route::post('/{dorm_id}', [OwnerController::class, 'storeRoom']);
+
+                // ? Create Dorm Based on Dorm and room
+                // ! Ubah Method menjadi PUT!!!
+                Route::post('/{dorm_id}/edit/{room_id}', [OwnerController::class, 'editRoom']);
             });
         });
 
