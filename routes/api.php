@@ -14,9 +14,29 @@ Route::prefix('v1')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/register', [AuthController::class, 'register']);
 
+    Route::get('/allDorms', function () {
+        return response()->json(Dorm::all());
+    });
+
     Route::middleware(['auth:sanctum'])->group(function () {
         // ! Logout Account => Delete Auth Token
         Route::post('/logout', [AuthController::class, 'logout']);
+
+        // ! Get All Dorms
+        Route::prefix('dorms')->group(function () {
+            // ? Get List of Dorms Based on User Owner
+            Route::get('/{user_id}', [OwnerController::class, 'getDorms']);
+
+            Route::get('/detail/{dorm_id}', [OwnerController::class, 'getDormDetail']);
+        });
+
+        // ! Get All Rooms
+        Route::prefix('rooms')->group(function () {
+            // ? Get List of Dorms Based on Dorm
+            Route::get('/{dorm_id}', [OwnerController::class, 'getRoom']);
+
+            Route::get('/detail/{room_id}', [OwnerController::class, 'getRoomDetail']);
+        });
 
         // ! Admin
         Route::prefix('admin')->middleware(['restrictRole:admin'])->group(function () {
@@ -34,36 +54,32 @@ Route::prefix('v1')->group(function () {
         Route::prefix('owner')->middleware(['restrictRole:owner'])->group(function () {
             // ! Dorms
             Route::prefix('dorms')->group(function () {
-                // ? Get List of Dorms Based on User Owner
-                Route::get('/{user_id}', [OwnerController::class, 'getDorms']);
-
-                Route::get('/detail/{dorm_id}', [OwnerController::class, 'getDormDetail']);
-
                 // ? Create Dorm Based on User Owner
                 Route::post('/{user_id}', [OwnerController::class, 'storeDorm']);
 
                 // ? Update Dorm Based on User Owner and dorm ID
-                // ! Ubah Method menjadi PUT!!!
-                Route::put('/{user_id}/edit/{dorm_id}', [OwnerController::class, 'editDorm']);
+                Route::post('/{user_id}/edit/{dorm_id}', [OwnerController::class, 'editDorm']);
 
                 Route::delete('/{dorm_id}', [OwnerController::class, 'deleteDorm']);
             });
 
             Route::prefix('rooms')->group(function () {
-                // ? Get List of Dorms Based on Dorm
-                Route::get('/{dorm_id}', [OwnerController::class, 'getRoom']);
-
                 // ? Create Dorm Based on Dorm
                 Route::post('/{dorm_id}', [OwnerController::class, 'storeRoom']);
 
                 // ? Create Dorm Based on Dorm and room
-                // ! Ubah Method menjadi PUT!!!
                 Route::post('/{dorm_id}/edit/{room_id}', [OwnerController::class, 'editRoom']);
             });
         });
 
         // ! Client
         Route::prefix('client')->middleware(['restrictRole:client'])->group(function () {
+            // ? Get Dorm Owner
+            Route::get('/dorm/owner/{id}', function ($id) {
+                return Dorm::find($id)->user;
+            });
+
+            // ? Register client to Owner
             Route::patch('/register-owner', function (Request $request) {
                 if ($request->user()->ownerStatus) {
                     return response()->json([

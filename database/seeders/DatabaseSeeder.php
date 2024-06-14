@@ -16,9 +16,9 @@ class DatabaseSeeder extends Seeder
     {
         // Admin
         User::factory()->create([
-            'name' => 'Danar Wijanarko',
+            'name' => 'admin',
             'phone' => '08232324252',
-            'email' => 'danarwijanarko98@gmail.com',
+            'email' => 'admin@gmail.com',
             'gender' => 'male',
             'password' => Hash::make('123456'),
             'role' => 'admin',
@@ -42,7 +42,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'client',
         ]);
 
-        User::factory(3)->create();
+        // User::factory(3)->create();
 
         // Dorm::factory(50)->create();
     }

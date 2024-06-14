@@ -20,6 +20,10 @@ class OwnerController extends Controller
     {
         return Dorm::find($dorm_id);
     }
+    public function getRoomDetail($room_id)
+    {
+        return Room::find($room_id);
+    }
 
     public function storeDorm(Request $request, $user_id)
     {
@@ -199,7 +203,7 @@ class OwnerController extends Controller
             'description' => 'required|string|max:255',
             'images' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'price' => 'required|integer',
-            'available' => 'required|string|max:15',
+            'available' => 'required|string',
         ]);
 
         if ($validated->fails()) {
